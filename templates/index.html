@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>各省特色产品图</title>
+  <style>
+    .container {
+      width: 1200px;
+      margin: 0 auto;
+    }
+
+    #myEcharts {
+      width: 800px;
+      height: 500px;
+      border: solid 1px red;
+      margin: 0 auto;
+    }
+  </style>
+  <script src="https://www.echartsjs.com/examples/vendors/jquery/jquery.js"></script>
+  <!-- 引入 echarts.js -->
+  <script src="https://www.echartsjs.com/examples/vendors/echarts/echarts.min.js?_v_=1578305236132"></script>
+  <!--引入中国的地图数据js文件，引入后会自动注册地图名字和数据-->
+  <script src="https://www.echartsjs.com/examples/vendors/echarts/map/js/china.js?_v_=1578305236132"></script>
+
+</head>
+
+<body>
+<div class="container">
+  <h3>中国各省特色产品图：</h3>
+  <!--为echarts准备一个dom容器-->
+  <div id="myEcharts"></div>
+</div>
+
+
+<script>
+  //初始化echarts实例
+  var myChart = echarts.init(document.getElementById('myEcharts'));
+  // 指定图表的配置项和数据
+  option = {
+    title: {
+      text: '各省特色产品图',
+      left: 'center'
+    },
+    tooltip: {
+      trigger: 'item'
+    },
+    legend: {
+      orient: 'vertical',
+      left: 'left',
+      data: ['各省特色产品图']
+    },
+    visualMap: {
+      type: 'piecewise',
+      pieces: [
+        {#{ min: 200, max: 1000000, label: '特色产品大于200样', color: '#372a28' },#}
+        {#{ min: 100, max: 199, label: '特色产品100-199样', color: '#4e160f' },#}
+        {#{ min: 30, max: 99, label: '特色产品30-99样', color: '#974236' },#}
+        {#{ min: 10, max: 29, label: '特色产品10-29样', color: '#ee7263' },#}
+        {#{ min: 1, max: 9, label: '特色产品1-9样', color: '#f5bba7' },        #}
+        { min: 200, max: 1000000, label: '特色产品大于200样', color: '#4B0082' },
+        { min: 100, max: 199, label: '特色产品100-199样', color: '#9400D3' },
+        { min: 30, max: 99, label: '特色产品30-99样', color: '#BA55D3' },
+        { min: 10, max: 29, label: '特色产品10-29样', color: '#EE82EE' },
+        { min: 1, max: 9, label: '特色产品1-9样', color: '#DDA0DD' },
+      ],
+      color: ['#E0022B', '#E09107', '#A3E00B']
+    },
+    toolbox: {
+      show: true,
+      orient: 'vertical',
+      left: 'right',
+      top: 'center',
+      feature: {
+        mark: { show: true },
+        dataView: { show: true, readOnly: false },
+        restore: { show: true },
+        saveAsImage: { show: true }
+      }
+    },
+    roamController: {
+      show: true,
+      left: 'right',
+      mapTypeControl: {
+        'china': true
+      }
+    },
+    series: [
+      {
+        name: '产品数',
+        type: 'map',
+        mapType: 'china',
+        roam: false,
+        label: {
+          show: true,
+          color: 'rgb(249, 249, 249)'
+        },
+        data: []
+      }
+    ]
+  };
+
+  //使用指定的配置项和数据显示图表
+  myChart.setOption(option);
+
+  //获取数据
+  function getData() {
+    $.ajax({
+      url: "/get_data/",
+      success: function (data) {
+          {#res = JSON.parse(data);#}
+          console.log(data);
+          //使用指定的配置项和数据显示图表
+          myChart.setOption({
+            series: [
+              {
+                name: '产品数',
+                type: 'map',
+                mapType: 'china',
+                roam: false,
+                label: {
+                  show: true,
+                  color: 'rgb(249, 249, 249)'
+                },
+                data: data
+              }
+            ]
+          });
+        }
+    })
+  }
+  getData();
+
+</script>
+</body>
+</html>
